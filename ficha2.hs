@@ -80,4 +80,38 @@ mySsort x = myMinimum x : mySsort(myDelete(myMinimum x) x)
 sumSquare = [x^2 | x <- [1..100]]
 
 -- 2.7
+-- (a)
 aprox :: Int -> Double
+aprox n = 4 * sum [ (-1)**a / (2 * a + 1) | a <- [0.0, 1.0 .. fromIntegral n]]
+
+-- (b)
+aprox' :: Int -> Double
+aprox' n = sqrt ( 12* sum [(-1)**a / (a + 1)^2 | a <- [0.0, 1.0 .. fromIntegral n]])
+
+-- 2.8
+dotprod :: [Float] -> [Float] -> Float
+dotprod a b = sum [x*y |(x, y) <- zip a b]
+
+-- 2.9
+divprop :: Integer -> [Integer]
+divprop a = [x | x <- [1 .. a-1], a `mod` x == 0]
+
+-- 2.10
+perfeitos :: Integer -> [Integer]
+perfeitos a = [x | x <- [1 .. a-1], sum (divprop x) == x]
+
+-- 2.11
+pitagoricos :: Integer -> [(Integer, Integer, Integer)]
+pitagoricos a = [(x, y, z) | x <- [1..a], y <- [1..a], z <- [1..a], x^2 + y^2 == z^2]
+
+-- 2.12 como fazer com lista de compressão
+primo :: Integer -> Bool
+primo a = divprop a == [1]
+
+-- 2.13 no exercicio diz Int (tem mal ser Integer) o que era suposto mudar?
+mersennes :: [Integer]
+mersennes = take 30 [x | x <- [1..], primo x == True]
+
+-- 2.14 binom ??
+pascal :: Integer -> [[Integer]]
+pascal a = 
