@@ -1,3 +1,5 @@
+import Data.Char
+
 -- 2.1
 -- (a)
 myand :: [Bool] -> Bool
@@ -104,14 +106,58 @@ perfeitos a = [x | x <- [1 .. a-1], sum (divprop x) == x]
 pitagoricos :: Integer -> [(Integer, Integer, Integer)]
 pitagoricos a = [(x, y, z) | x <- [1..a], y <- [1..a], z <- [1..a], x^2 + y^2 == z^2]
 
--- 2.12 como fazer com lista de compressão
+-- 2.12 
 primo :: Integer -> Bool
 primo a = divprop a == [1]
 
--- 2.13 no exercicio diz Int (tem mal ser Integer) o que era suposto mudar?
+-- 2.13 
 mersennes :: [Integer]
 mersennes = take 30 [x | x <- [1..], primo x == True]
 
--- 2.14 binom ??
-pascal :: Integer -> [[Integer]]
-pascal a = 
+-- 2.14 
+binom :: Int -> Int -> Int
+binom n k = fact n `div` (fact k * fact (n-k))
+    where fact n = product [1..n]
+
+pascal :: Int -> [[Int]]
+pascal n = [[ binom i j | j <- [0..i]] | i <- [0..n]]
+
+-- 2.15
+cifraLetra :: Int -> Char -> Char
+cifraLetra k x | isLetter x && isUpper x = chr (mod (ord x + k - ord 'A' ) 26 + ord 'A' )
+               | isLetter x && isLower x = chr (mod (ord x +k - ord 'a' ) 26 + ord 'a' )
+               | otherwise = x
+
+cifrar :: Int -> String -> String
+cifrar k xs = [cifraLetra k x | x <- xs]
+
+-- 2.16
+compConcat :: [[a]] -> [a]
+compConcat xss = [x | xs <- xss, x <- xs]
+
+compReplicate :: Int -> a -> [a]
+compReplicate n x = [x | _ <- [1..n]]
+
+-- 2.17
+forte :: String -> Bool
+forte x = length x >= 8 && any isLower x && any isUpper x && any isNumber x
+
+-- 2.18
+-- (a)
+mindiv :: Int -> Int
+mindiv n = head [i | i <- [2..n], mod n i == 0]
+
+-- (b)
+primo' :: Int -> Bool
+primo' n = n > 1 && (mindiv n == n)
+
+
+-- 2.19
+mynub :: Eq a => [a] -> [a]
+mynub []  = []
+mynub (x:xs) = x:mynub [y | y <- xs, y /= x]
+
+-- 2.20
+transpose :: [[a]] -> [[a]]
+transpose xss = [ [xs !! i | xs <- xss] | i <- [0..(z-1)] ]
+    where z = length (head xss)
