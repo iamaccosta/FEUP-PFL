@@ -135,3 +135,35 @@ algarismos:: Int -> [Int]
 algarismos n | n < 10 = [n]
              | otherwise = algarismos (div n 10) ++ [mod n 10]
 
+-- 2.22
+toBits:: Int -> [Int]
+toBits n | n < 0 = error "Number inválid"
+         | n < 2 = [n]
+         | otherwise = toBits(div n 2) ++ [mod n 2]
+
+-- 2.23
+fromBits:: [Int] -> Int
+fromBits [] = 0
+fromBits xs | head(xs) == 0 = fromBits(tail xs)
+            | otherwise = 2^(length(xs) - 1) + fromBits(tail xs)
+
+-- 2.24
+-- (a)
+merge:: Ord a => [a] -> [a] -> [a]
+merge [] ys = sort ys
+merge xs [] = sort xs
+merge (x:xs) (y:ys) | x < y = x : merge xs (y:ys)
+                    | otherwise = y : merge (x:xs) ys
+
+-- (b)
+metades :: [a] -> ([a],[a]) 
+metades [] = ([],[])
+metades [x] = ([x],[])
+metades (x:x1:xs) = (x:z,x1:z1)
+    where (z,z1) = metades xs
+
+mergeSort :: Ord a => [a] -> [a]
+mergeSort [] = []
+mergeSort [x] = [x]
+mergeSort xs = merge (mergeSort left) (mergeSort right)
+    where  (left,right) = metades xs
