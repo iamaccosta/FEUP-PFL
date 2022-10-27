@@ -313,3 +313,127 @@ itera n f v = f (itera (n-1) f v)
 -- (b)
 mult:: Int -> Int -> Int
 mult a b = itera 1 (*b) a
+
+
+--------------------------------------------------------
+------------------------- 2021 -------------------------
+--------------------------------------------------------
+
+---------------------------
+--------- Parte 1 ---------
+---------------------------
+
+-- 1 [(x,y) | x <- "abc", y <- [1,2]]
+-- [('a', 1),('a', 2),('b', 1),('b', 2),('c', 1),('c', 2)]
+
+-- 2 (map (>0))
+-- [Int] -> [Bool] // (Ord a, Num a) -> [a] -> [Bool]
+
+-- 3
+-- last [x] = x
+-- last (x:xs) = last xs
+-- [a] -> a
+
+-- 4 foldr (+) 7 [1,2,3]
+-- 13
+
+-- 5  (estudar)
+
+-- 6 head [[1], [2,3], [4,5,6]]
+-- [Int]
+
+-- 7 tail (reverse [1,2,3])
+-- [2,1]
+
+-- 8 [(x,y) | (x,y) <- [(1,2),(2,3)], x*y==6]
+-- [(2,3)]
+
+-- 9 cycle (cycle [1,2,3])
+-- [1,2,3,1,2,3..]
+
+-- 10 head (zip [1..10] (tail [1..10]))
+-- (1,2)
+
+-- 11 a)
+
+-- 12 filter (/='a') "abba"
+-- "bb"
+
+---------------------------
+--------- Parte 2 ---------
+---------------------------
+
+-- 1
+maxpos:: [Int] -> Int
+maxpos (x:[]) = if x > 0 then x else 0
+maxpos (x:y:xs) | x > y = maxpos (x:xs)
+                | otherwise = maxpos (y:xs)
+
+maxpos':: [Int] -> Int
+maxpos' xs = foldr max 0 xs
+
+
+-- 2
+dups:: [a] -> [a]
+dups [] = []
+dups (x:[]) = x : x : []
+dups (x:y:xs) = x : x : y : dups xs
+
+-- 3
+transforma:: String -> String
+transforma [] = []
+transforma (x:xs) | x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u' = x : 'p' : x : transforma xs
+                  | otherwise = x : transforma xs
+
+--------------------------------------------------------------
+type Vector = [Int]
+type Matriz = [[Int]]
+
+-- 4
+transposta :: Matriz -> Matriz
+transposta [] = []
+transposta m = [head x | x <- m] : transposta [tail x | x <- m, tail x /= []]
+
+-- 5
+prodInterno :: Vector -> Vector -> Int
+prodInterno xs ys = sum [x*y | (x,y) <- zip xs ys]
+
+-- 6 
+prodMat :: Matriz -> Matriz -> Matriz
+prodMat m1 m2 = prodMatAux m1 (transposta m2)
+
+prodMatAux :: Matriz -> Matriz -> Matriz
+prodMatAux [] [] = []
+prodMatAux m1 m2 = [[prodInterno v1 v2 | v2 <- m2] | v1 <- m1]
+
+--------------------------------------------------------------
+data Arv a = F | N a (Arv a) (Arv a) deriving(Show)
+
+-- 7
+alturas:: Arv a -> Arv Int
+alturas F = F
+alturas (N a esq dir) = N (alturasAux (N a esq dir)) (alturas esq) (alturas dir)
+
+
+alturasAux:: Arv a -> Int
+alturasAux F = 0
+alturasAux (N a esq dir) = 1 + max (alturasAux esq) (alturasAux dir)
+
+-- 8
+equilibrada:: Eq a => Arv a -> Bool
+equilibrada F = False
+equilibrada (N a F dir) = False
+equilibrada (N a esq F) = False
+equilibrada (N a esq dir) | alturasAux esq == alturasAux dir = True 
+                          | otherwise = False
+
+-- 9
+f:: (a -> b -> c) -> b -> a -> c
+f g b a = g a b
+
+
+--------------------------------------------------------------------
+-- IO study
+
+acao = do putStrLn "Que queres lanchar?"
+          getLine
