@@ -437,3 +437,14 @@ f g b a = g a b
 
 acao = do putStrLn "Que queres lanchar?"
           getLine
+
+---------------------------
+-- 8
+rabbits:: [Int]
+rabbits = [2] ++ [3] ++ [x | x <- xs]
+    where xs = rabbitsAux 2 3
+
+
+rabbitsAux:: Int -> Int -> [Int]
+rabbitsAux a b = c : rabbitsAux b c
+    where c = a + b
