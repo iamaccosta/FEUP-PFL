@@ -119,3 +119,51 @@ colega(X,Y):-frequenta(X,_Z), frequenta(Y,_Z), X\=Y.
 empenhados(X):-frequenta(X,A), frequenta(X,B), A\=B.
 
 % 3.
+
+pilot(lamb).
+pilot(besenyei).
+pilot(chambliss).
+pilot(macLean).
+pilot(mangold).
+pilot(jones).
+pilot(bonhomme).
+
+team(lamb,breitling).
+team(besenyei,'Red Bull').
+team(chambliss,'Red Bull').
+team(macLean,'Mediterranean Racing Team').
+team(mangold,cobra).
+team(jones,matador).
+team(bonhomme,matador).
+
+aviao(lamb,'MX2').
+aviao(besenyei,'Edge540').
+aviao(chambliss,'Edge540').
+aviao(macLean,'Edge540').
+aviao(mangold,'Edge540').
+aviao(jones,'Edge540').
+aviao(bonhomme,'Edge540').
+
+circuit(istanbul).
+circuit(budapest).
+circuit(porto).
+
+victory(jones,porto).
+victory(mangold,budapest).
+victory(mangold,istanbul).
+
+gates(istanbul,9).
+gates(budapest,6).
+gates(porto,5).
+
+teamVictory(X,_Z) :- team(Y,X),victory(Y,_Z).
+
+% b)
+% i. victory(X,porto).
+% ii. teamVictory(X,porto).
+% iii. circuit(X), gates(X,Y), Y>8.
+% iv. aviao(X,Y), Y\='Edge540'.
+% v.
+% vi. 
+
+% 4.
