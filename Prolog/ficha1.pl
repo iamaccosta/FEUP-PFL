@@ -166,4 +166,81 @@ teamVictory(X,_Z) :- team(Y,X),victory(Y,_Z).
 % v.
 % vi. 
 
-% 4.
+%#####################################################################
+traduz(1, 'Integer Overflow').
+traduz(2, 'Divisao por zero').
+traduz(3, 'ID Desconhecido').
+
+%# prolog index by the name and by the first argument.
+%# it is a good practice to use this as a way to make it faster (first argument as index)
+%# prolog works top down, left to right, with backtracking.
+%# order of predicate is important in terms of correctness and efficiency.
+%# for example if we have:
+%# father(x,y):- parent(x,y), male(x).
+%# first we try to solve for parent then for male.
+
+%# top down searching for a match.
+%# in a function left to right trying to solve each predicate.
+
+%# Functioning of a call diagram:
+%#
+%#                +----------------------------+
+%#    call        |                            |  exit [yes]
+%#   ---------->  | -----> D ----------+-------+ --------------> +
+%#                |        |           |       |                 |
+%#     fail       |        |           |       |   redo          |
+%#   <----------- +--------+---------- D ------+ <------------ <-+
+%#     [no]       |                            |
+%#                +-----------+-----------------
+%#                            |
+%#                <-----------+
+%#                   exception
+%#
+%#      N    S    Call |    Depth |   Port                 |   goal
+%#      ?          ID  |     1    |   one of those on top  |   father(X,'Luke').
+%#                                                         |   parent(X,'Luke').
+%# OBS: D is possible paths to take.
+
+%# use trace to view these calls, it helps understand with recursion (normal vs tail).
+%# btw, tail is more efficient.
+%# basically, user trace for debbuging.
+
+%# underscore and a number means the memory position of it.
+
+%# exercice 6 - first sheet
+
+pairs(X, Y):- d(X), q(Y).
+pairs(X, X):- u(X).
+u(1).
+d(2).
+d(4).
+q(4).
+q(16).
+
+%# the trace of calling: pairs(x,y).
+%# pairs(X,X).
+%#   d(X) -> d(2) X = 2
+%#       q(Y) -> q(4) Y = 4 --> X = 2, Y = 4 ? ;
+%#       q(y) ->  q(16) Y = 16 --> x = 2, Y = 16 ? ;
+%#   d(X) - > d(4) X = $
+%#       q(Y) -> q(4) Y = 4 --> X = 4, Y = 4 ? ;
+%#       q(y) ->  q(16) Y = 16 --> x = 4, Y = 16 ? ;
+%# pairs(X,X).
+%#   u(X) --> X = 1 , y = 1 ? ;
+%# no 
+
+%# exercise 7 - first sheet - TPC
+
+% a(a1, 1).
+% a(A2, 2).
+% a(a3, N).
+% b(1, b1).
+% b(2, B2).
+% b(N, b3).
+% c(X, Y):- a(X, Z), b(Z, Y).
+% d(X, Y):- a(X, Z), b(Y, Z).
+% d(X, Y):- a(Z, X), b(Z, Y).
+
+%# for example if a(X,2) is called then it doesn't matter what the first argument is
+%# as long as 2 exists then it is true. This is because we have a(A2,2).
+%# This is also valid for the other ones.
