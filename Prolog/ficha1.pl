@@ -1,5 +1,5 @@
 % 1.
-% a)
+%# a)
 female(grace).
 female(merle).
 female(cameron).

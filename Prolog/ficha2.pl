@@ -151,8 +151,14 @@ superior(X, Y) :- cargo(C, Y), chefiado_por(C, W), cargo(W, P), superior(X, P).
 
 %# 5.
 %# a)
+list_size([], 0).
+list_size([_|T], Size):- list_size(T, Aux),
+                         Size is Aux+1.
 
 %# b)
+list_sum([H], H).
+list_sum([H|T], Sum):- list_sum(T, Aux),
+                       Sum is H + Aux.
 
 %# c)
 list_prod([H], H).
@@ -172,6 +178,9 @@ count(X, [_|T], N):- count(X, T, N).
 
 %# 6.
 %# a)
+invert(List, Res):- invert(List, [], Res).
+invert([H|T], Aux, Res):- invert(T, [H|Aux], Res).
+invert([], Res, Res).
 
 %# b)
 del_one(_, [], []).
@@ -209,9 +218,26 @@ insert_elem(Pos, [H|T], Elem, Res):- Pos1 is Pos-1,
                                      Res = [H|Res1].
 
 %# j)
-%delet_elem()
+delet_elem(0, [H|T], H, T).
+delet_elem(Pos, [H|T], Elem, Res):- Pos1 is Pos - 1,
+                                    delet_elem(Pos1, T, Elem, Res1),
+                                    Res = [H|Res1].
 
 %# 7.
+%# a)
+list_append([], L2, L2). 
+list_append([H|T1], L2, [H|T3]):- list_append(T1, L2, T3).
+
+%# b)
+list_member(Elem, List):- list_append(_Part1, [Elem | _Part2], List).
+
+%# c)
+list_last(List, Last):- list_append(_ExceptLast, [Last | []], List).
+
+%# d)
+list_nth(N, List, Elem) :- list_append(Part1, [Elem | _Part2], List),
+                           length(Part1, N).
+
 
 %# 8.
 
