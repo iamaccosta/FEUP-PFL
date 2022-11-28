@@ -61,22 +61,18 @@
 
 
 %# 1 - Recurcivity
-
-%# a
-
+%# a)
 fact(1,1).
 fact(N,F):- N > 1, N1 is N-1, fact(N1,F1), F is F1*N.
 
-%# b
-
+%# b)
 somaRec(1,1).
 somaRec(N, Sum):- N > 1,
                    N1 is N-1,
                    somaRec(N1,Sum1),
                    Sum is Sum1+N.
 
-%# c
-
+%# c)
 fibonacci(0,0).
 fibonacci(1,1).
 fibonacci(N,F):- N > 1,
@@ -86,10 +82,15 @@ fibonacci(N,F):- N > 1,
                    fibonacci(N2,F2),
                    F is F1+F2.
 
-%# d
+%# d)
+divisible(X,Y) :- 0 is X mod Y.
+divisible(X,Y) :- Y < X - 1,
+                  Y1 is Y+1,
+                  divisible(X, Y1).
 
-%isPrime(1,1).
-%isPrime(X):- N>1, N1 is N-1, isPrime().
+isPrime(2).
+isPrime(X) :- X > 1, 
+              \+divisible(X, 2).
 
 %# Tail recursion
 %# 
@@ -103,8 +104,36 @@ fibonacci(N,F):- N > 1,
 
 
 %# 2.
+%# a)
+ancestor(X, Y):- parent(X, Y). 
+ancestor(X, Y):- parent(X, Z), 
+                  ancestor(Z, Y). 
+
+%# b)
+descendant(X, Y):- ancestor(Y, X).
 
 %# 3.
+cargo(tecnico, eleuterio).
+cargo(tecnico, juvenaldo).
+cargo(analista, leonilde).
+cargo(analista, marciliano).
+cargo(engenheiro, osvaldo).
+cargo(engenheiro, porfirio).
+cargo(engenheiro, reginaldo).
+cargo(supervisor, sisnando).
+cargo(supervisor_chefe, gertrudes).
+cargo(secretaria_exec, felismina).
+cargo(diretor, asdrubal).
+chefiado_por(tecnico, engenheiro).
+chefiado_por(engenheiro, supervisor).
+chefiado_por(analista, supervisor).
+chefiado_por(supervisor, supervisor_chefe).
+chefiado_por(supervisor_chefe, diretor).
+chefiado_por(secretaria_exec, diretor).
+
+superior(X, Y) :- cargo(C1, X), cargo(C2, Y), chefiado_por(C2, C1).
+superior(X, Y) :- cargo(C, Y), chefiado_por(C, W), cargo(W, P), superior(X, P).
+
 
 %# 4.
 %# a) True
@@ -121,6 +150,9 @@ fibonacci(N,F):- N > 1,
 %# l) True, if One = leic && (Two | Tail) = Rest
 
 %# 5.
+%# a)
+
+%# b)
 
 %# c)
 list_prod([H], H).
@@ -139,6 +171,7 @@ count(X, [X|T], N):- count(X, T, N1),
 count(X, [_|T], N):- count(X, T, N).
 
 %# 6.
+%# a)
 
 %# b)
 del_one(_, [], []).
