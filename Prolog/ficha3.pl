@@ -1,3 +1,5 @@
+:-use_module(library(ordsets)).
+
 %# 1.
 %s(1).
 %s(2):- !.
@@ -220,7 +222,7 @@ parent(haley,george).
 parent(haley,poppy).
 
 %# a)
-children(Person, Children):- findall(Child, parent(Person, Child), Children).
+children(Person, Children):- setof(Child, parent(Person, Child), Children).
 
 %# b)
 children_of([], []).
@@ -239,10 +241,134 @@ couple(P1-P2):- parent(P1, C), parent(P2, C), P1 \= P2.
 couples(Couples):- setof(Couple, couple(Couple), Couples).
 
 %# f) engloba relações de stepmom-stepson e.g.
-spouse_children(Person, Spouse/Children) :- couple(Person-Spouse),
-                                            children(Person, Children).
+spouse_children(Person, Spouse/Children):- couple(Person-Spouse),
+                                           children(Person, Children).
+
+%# g)
+immediate_family(Person, Parents-SC):- setof(Parent, parent(Parent, Person), Parents),
+                                       setof(X, spouse_children(Person, X), SC).
+
+%# h)
+parents_of_two(Parents):- setof(Person, (Children)^(children(Person, Children), (length(Children, L), L @>= 2)), Parents).
 
 %# 6.
+leciona(adalberto,algoritmos).
+leciona(bernardete,'bases de dados').
+leciona(bernardete,'bases de muitos dados').
+leciona(capitolino,compiladores).
+leciona(diogenes,estatistica).
+leciona(ermelinda,redes).
+
+frequenta(alberto,algoritmos).
+frequenta(bruna,algoritmos).
+frequenta(cristina,algoritmos).
+frequenta(diogo,algoritmos).
+frequenta(eduarda,algoritmos).
+frequenta(eduardo,algoritmos).
+frequenta(antonio,'bases de dados').
+frequenta(bruno,'bases de dados').
+frequenta(cristina,'bases de dados').
+frequenta(duarte,'bases de dados').
+frequenta(eduardo,'bases de dados').
+frequenta(alberto,'bases de dados').
+frequenta(alberto,compiladores).
+frequenta(bernardo,compiladores).
+frequenta(clara,compiladores).
+frequenta(diana,compiladores).
+frequenta(eurico,compiladores).
+frequenta(antonio,estatistica).
+frequenta(bruna,estatistica).
+frequenta(claudio,estatistica).
+frequenta(duarte,estatistica).
+frequenta(eva,estatistica).
+frequenta(alvaro,redes).
+frequenta(beatriz,redes).
+frequenta(claudio,redes).
+frequenta(diana,redes).
+frequenta(eduardo,redes).
+
+%# a)
+teachers(Teachers):- setof(Teacher, (Teacher, UC)^leciona(Teacher, UC), Teachers).
+
+%# b) usar setof (evita duplicados)
+
+%# c)
+students_of(T, S):- setof(Student, (UC)^(leciona(T, UC), frequenta(Student, UC)), S).
+
+%# d)
+teachers_of(S, T):- setof(Teacher, (UC)^(leciona(Teacher, UC), frequenta(S, UC)), T).
+
+%# e)
+common_courses(S1, S2, UC):- setof(Course, (frequenta(S1, Course), frequenta(S2, Course)), UC).
+
+%# f)
+more_than_one_course(S):- setof(Student, (UC1, UC2)^(frequenta(Student, UC1), frequenta(Student, UC2), UC1 \= UC2), S).
+
+%# g)
+colega(X,Y):-frequenta(X,_Z), frequenta(Y,_Z), X\=Y.
+
+strangers(L):- setof(S1-S2, (UC1, UC2)^(frequenta(S1, UC1), frequenta(S2, UC2), S1 \= S2), StudentPairs),
+               setof(S1-S2, colega(S1, S2), MatePairs),
+               ord_subtract(StudentPairs, MatePairs, L).
+
+%# h) 
+good_groups(L):- setof(S1-S2, (UC1, UC2)^(frequenta(S1, UC1), frequenta(S1, UC2), UC1 \= UC2, frequenta(S2, UC1), frequenta(S2, UC2), S1 \= S2), L).
 
 %# 7.
+%class(Course, ClassType, DayOfWeek, Time, Duration)
+class(pfl, t, '1 Seg', 11, 1).
+class(pfl, t, '4 Qui', 10, 1).
+class(pfl, tp, '2 Ter', 10.5, 2).
+class(lbaw, t, '1 Seg', 8, 2).
+class(lbaw, tp, '3 Qua', 10.5, 2).
+class(ltw, t, '1 Seg', 10, 1).
+class(ltw, t, '4 Qui', 11, 1).
+class(ltw, tp, '5 Sex', 8.5, 2).
+class(fsi, t, '1 Seg', 12, 1).
+class(fsi, t, '4 Qui', 12, 1).
+class(fsi, tp, '3 Qua', 8.5, 2).
+class(rc, t, '4 Qui', 8, 2).
+class(rc, tp, '5 Sex', 10.5, 2).
+
+%# a)
+same_day(UC1, UC2):- class(UC1, _, Day1, _, _), class(UC2, _, Day1, _, _).
+
+%# b)
+daily_courses(Day, Courses):- setof(Course, (ClassType, Time, Duration)^class(Course, ClassType, Day, Time, Duration), Courses).
+
+%# c)
+short_classes(L):- setof(Course, (ClassType, Day, Time, Duration)^(class(Course, ClassType, Day, Time, Duration), Duration @< 2), L).
+
+%# d)
+course_classes(Course, L):- setof(Day/Time-Type, Duration^class(Course, Type, Day, Time, Duration), L).
+
+%# e)
+courses(Courses):- setof(Course, (ClassType, Day, Time, Duration)^class(Course, ClassType, Day, Time, Duration), Courses).
+
+%# f)
+schedule:- setof(Day/Time/Duration-Course-Type, class(Course, Type, Day, Time, Duration), Classes),
+           print_list(Classes).
+
+print_list([]).
+print_list([H|T]):- write(H), nl, print_list(T).
+
+%# g)
+convert_day('1 Seg', seg).
+convert_day('2 Ter', ter).
+convert_day('3 Qua', qua).
+convert_day('4 Qui', qui).
+convert_day('5 Sex', sex).
+
+better_schedule:- setof(Day/Time/Duration-Course-Type, class(Course, Type, Day, Time, Duration), Classes),
+                  print_schedule(Classes).
+
+print_schedule([]).
+print_schedule([H|T]):- convert(H, New),
+                        write(New), nl,
+                        print_schedule(T).
+
+convert(Day/Time/Duration-Course-Type, BetterDay/Time/Duration-Course-Type):- convert_day(Day, BetterDay).
+
+%# h)
+
 

@@ -235,9 +235,34 @@ list_member(Elem, List):- list_append(_Part1, [Elem | _Part2], List).
 list_last(List, Last):- list_append(_ExceptLast, [Last | []], List).
 
 %# d)
-list_nth(N, List, Elem) :- list_append(Part1, [Elem | _Part2], List),
-                           length(Part1, N).
+list_nth(N, List, Elem):- list_append(Part1, [Elem | _Part2], List),
+                          length(Part1, N).
 
+%# e)
+list_concat([L1|[]], Res):- L1 = Res.
+list_concat([L1|Rest], Res):- list_append(L1, LRem, Res),
+                              list_concat(Rest, LRem).
+
+%# f)
+list_del(List, Elem, Res):- list_append(Part1, [Elem | Part2], List),
+                            list_append(Part1, Part2, Res).
+
+%# g)
+list_before(First, Second, List):- list_append(_Part1, [First|Rest1], List),
+                                   list_append(_Part2, [Second|_Rest2], Rest1).
+
+%# h)
+list_replace_one(X, Y, List1, List2):- list_append(Part1, [X|Rest1], List1),
+                                       list_append(Part1, [Y|Rest1], List2).
+
+%# i)
+list_repeated(X, List):- list_append(_Part1, [X|Rest1], List),
+                         list_append(_Part2, [X|_Rest2], Rest1).
+
+%# j)
+list_slice(List, Index, Size, List2):-  
+
+%# k)
 
 %# 8.
 
