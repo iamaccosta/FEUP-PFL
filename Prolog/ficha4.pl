@@ -56,3 +56,31 @@ flight(porto, frankfurt, lufthansa, lh1177, 1230, 165).
 get_all_nodes(ListOfAllNodes):- setof(Airport, (Orig, Dest, Comp, Code, Hour, Dura)^(flight(Orig, Dest, Comp, Code, Hour, Dura), (Orig=Airport; Dest= Airport)), ListOfAllNodes).
 
 %# b)
+most_diversified(Company):- 
+    get_all_companies(ListOfCompanies),
+    get_most_diversified(ListOfCompanies, 0, [], [Best|_Rest]),
+    Company = Best.
+
+get_all_companies(ListOfCompanies):-
+    setof(Company, (Orig, Dest, Company, Code, Hour, Dura)^flight(Orig, Dest, Company, Code, Hour, Dura), ListOfCompanies).
+
+get_most_diversified([],_,CurrentCompanies, Companies):- append([], [CurrentCompanies], Companies).
+get_most_diversified([Current|Rest], CurrentLength, CurrentCompanies, Companies):-
+    setof(Dest, (Orig,Dest,Current,Code,Hour,Dura)^flight(Orig,Dest,Current,Code,Hour,Dura), ListofDests),
+    length(ListofDests, L),
+    L > CurrentLength, !,
+    append(CurrentCompanies, Current, New),
+    get_most_diversified(Rest, L, New, Companies).
+get_most_diversified([_|Rest], CurrentLength, CurrentCompanies, Companies):- get_most_diversified(Rest, CurrentLength, CurrentCompanies, Companies).
+
+%# c)
+connects_dfs(S, F, C) :- connects_dfs(S, F, [S], C).
+
+connects_dfs(F, F, _Path, []).        
+connects_dfs(S, F, T, [C | R]):- flight(S, N, _, C, _, _),
+                           \+ member(N, T),
+                           connects_dfs(N, F, [N|T], R).
+
+find_flights(Or, Dest, Flights) :- connects_dfs(Or, Dest, Flights).
+
+
